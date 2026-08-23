@@ -20,6 +20,14 @@ export function available() {
   return !!(c.endpoint && /^https?:\/\//.test(c.endpoint));
 }
 
+/** Nagłówki żądania — dokłada anon-key jeśli podany (Supabase za JWT). */
+function headers() {
+  const c = getConfig();
+  const h = { 'Content-Type': 'application/json' };
+  if (c.anonKey) { h['apikey'] = c.anonKey; h['Authorization'] = 'Bearer ' + c.anonKey; }
+  return h;
+}
+
 /** Instrukcja systemowa dopasowana do poziomu i wariantu Marcela. */
 export function systemPrompt() {
   const p = get().profile;
@@ -49,7 +57,7 @@ export async function chat(history) {
   if (!available()) throw new Error('ai-not-configured');
   const res = await fetch(c.endpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: headers(),
     body: JSON.stringify({
       mode: 'chat',
       model: c.model || 'claude-haiku-4-5',
@@ -75,7 +83,7 @@ export async function generateExercises(weakWords = []) {
   if (!available()) throw new Error('ai-not-configured');
   const res = await fetch(c.endpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: headers(),
     body: JSON.stringify({
       mode: 'exercises',
       model: c.model || 'claude-haiku-4-5',

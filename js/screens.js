@@ -542,14 +542,15 @@ export function settings(nav) {
 
   // AI proxy
   const cfg = AI.getConfig();
-  const endpoint = el('input', { class: 'textin', type: 'url', placeholder: 'https://twoj-serwer/ai', value: cfg.endpoint || '' });
+  const endpoint = el('input', { class: 'textin', type: 'url', placeholder: 'https://<ref>.supabase.co/functions/v1/ai-tutor', value: cfg.endpoint || '' });
   const model = el('input', { class: 'textin', type: 'text', placeholder: 'model (np. claude-haiku-4-5)', value: cfg.model || '', style: 'margin-top:8px' });
+  const anonKey = el('input', { class: 'textin', type: 'text', placeholder: 'anon key Supabase (opcjonalnie)', value: cfg.anonKey || '', style: 'margin-top:8px' });
   screen.append(el('div', { class: 'card mb' }, [
     el('h3', {}, '✨ Rozmowa z AI (opcjonalne)'),
-    el('p', { class: 'small' }, 'Aby włączyć rozmowę z tutorem, podaj adres swojego bezpiecznego serwera (proxy), który trzyma klucz API. Klucz NIE jest zapisywany w aplikacji — zostaje na serwerze.'),
-    endpoint, model,
+    el('p', { class: 'small' }, 'Podaj adres funkcji na Supabase Marcela (Edge Function „ai-tutor"). Klucz do modelu NIE jest w aplikacji — zostaje na serwerze. Anon key wypełnij tylko jeśli funkcja wymaga JWT.'),
+    endpoint, model, anonKey,
     el('button', { class: 'btn btn--green mt', type: 'button', onclick: () => {
-      AI.setConfig({ endpoint: endpoint.value.trim(), model: model.value.trim() });
+      AI.setConfig({ endpoint: endpoint.value.trim(), model: model.value.trim(), anonKey: anonKey.value.trim() });
       toast(AI.available() ? '✅ AI włączone' : 'Zapisano (podaj poprawny URL)');
     } }, 'Zapisz konfigurację AI')
   ]));
