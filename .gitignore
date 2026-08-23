@@ -1,0 +1,10 @@
+# system / edytor
+Thumbs.db
+.DS_Store
+desktop.ini
+*.tmp
+.vscode/
+.idea/
+
+# nic z node — projekt jest czysto statyczny (vanilla JS)
+node_modules/
