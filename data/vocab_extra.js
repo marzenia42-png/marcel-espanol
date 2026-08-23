@@ -1,0 +1,101 @@
+/* vocab_extra.js — słownictwo do 2. lekcji jednostek 4–10 (dobudowa falą 2).
+   Id z prefiksem uX- (bez kolizji z podstawowym słownikiem). Doklejane w vocab.js. */
+
+export const EXTRA_VOCAB = [
+  /* U4 — restauracja */
+  { id: 'u4-carta', es: 'la carta', pl: 'menu / karta', ex: '¿Me trae la carta, por favor?' },
+  { id: 'u4-quiero', es: 'quiero', pl: 'chcę / poproszę', ex: 'Quiero un café con leche.' },
+  { id: 'u4-me-pone', es: 'me pone', pl: 'poproszę (dosł. poda mi pan)', ex: 'Me pone una caña, por favor.', chunk: true },
+  { id: 'u4-de-primero', es: 'de primero', pl: 'na pierwsze danie', ex: 'De primero quiero una sopa.', chunk: true },
+  { id: 'u4-de-segundo', es: 'de segundo', pl: 'na drugie danie', ex: 'De segundo, pollo con patatas.', chunk: true },
+  { id: 'u4-la-cuenta', es: 'la cuenta', pl: 'rachunek', ex: 'La cuenta, por favor.', chunk: true },
+  { id: 'u4-camarero', es: 'el camarero', pl: 'kelner', ex: 'El camarero trae la comida.' },
+  { id: 'u4-agua', es: 'el agua', pl: 'woda', ex: 'Un vaso de agua, por favor.' },
+  { id: 'u4-por-favor', es: 'por favor', pl: 'proszę', ex: 'Un café, por favor.', chunk: true },
+  { id: 'u4-gracias', es: 'gracias', pl: 'dziękuję', ex: 'Muchas gracias, camarero.' },
+  { id: 'u4-postre', es: 'el postre', pl: 'deser', ex: 'De postre quiero un helado.' },
+  { id: 'u4-caña', es: 'la caña', pl: 'małe piwo z beczki', ex: 'Me pone una caña, por favor.' },
+
+  /* U5 — miasto */
+  { id: 'u5-recto', es: 'todo recto', pl: 'prosto', ex: 'Sigue todo recto hasta la plaza.', chunk: true },
+  { id: 'u5-cerca', es: 'cerca', pl: 'blisko', ex: 'El metro está cerca de aquí.' },
+  { id: 'u5-lejos', es: 'lejos', pl: 'daleko', ex: 'La estación está lejos.' },
+  { id: 'u5-plaza', es: 'la plaza', pl: 'plac / rynek', ex: 'La plaza mayor está en el centro.' },
+  { id: 'u5-estacion', es: 'la estación', pl: 'dworzec / stacja', ex: 'La estación de tren está allí.' },
+  { id: 'u5-metro', es: 'el metro', pl: 'metro', ex: 'Voy en metro al centro.' },
+  { id: 'u5-como-llego', es: '¿cómo llego a…?', pl: 'jak dojdę do…?', ex: '¿Cómo llego a la plaza?', chunk: true },
+  { id: 'u5-derecha', es: 'a la derecha', pl: 'w prawo', ex: 'Gira a la derecha en la esquina.', chunk: true },
+  { id: 'u5-izquierda', es: 'a la izquierda', pl: 'w lewo', ex: 'El banco está a la izquierda.', chunk: true },
+  { id: 'u5-gira', es: 'gira', pl: 'skręć', ex: 'Gira a la derecha aquí.' },
+  { id: 'u5-calle', es: 'la calle', pl: 'ulica', ex: 'Vivo en esta calle.' },
+  { id: 'u5-esquina', es: 'la esquina', pl: 'róg (ulicy)', ex: 'El café está en la esquina.' },
+
+  /* U6 — czas i dni */
+  { id: 'u6-son-las', es: 'son las…', pl: 'jest godzina…', ex: 'Son las tres de la tarde.', chunk: true },
+  { id: 'u6-la-una', es: 'es la una', pl: 'jest pierwsza', ex: 'Es la una en punto.', chunk: true },
+  { id: 'u6-y-media', es: 'y media', pl: 'i pół (wpół do)', ex: 'Son las dos y media.', chunk: true },
+  { id: 'u6-y-cuarto', es: 'y cuarto', pl: 'kwadrans po', ex: 'Son las cuatro y cuarto.', chunk: true },
+  { id: 'u6-lunes', es: 'el lunes', pl: 'poniedziałek', ex: 'El lunes tengo clase.' },
+  { id: 'u6-martes', es: 'el martes', pl: 'wtorek', ex: 'El martes voy al médico.' },
+  { id: 'u6-miercoles', es: 'el miércoles', pl: 'środa', ex: 'El miércoles es fiesta.' },
+  { id: 'u6-fin-de-semana', es: 'el fin de semana', pl: 'weekend', ex: 'El fin de semana descanso.', chunk: true },
+  { id: 'u6-hora', es: '¿qué hora es?', pl: 'która godzina?', ex: '¿Qué hora es, por favor?', chunk: true },
+  { id: 'u6-en-punto', es: 'en punto', pl: 'równo (o pełnej godzinie)', ex: 'Son las cinco en punto.', chunk: true },
+  { id: 'u6-hoy', es: 'hoy', pl: 'dzisiaj', ex: 'Hoy es lunes.' },
+  { id: 'u6-martes-manana', es: 'mañana', pl: 'jutro', ex: 'Mañana es martes.' },
+
+  /* U7 — kolory i ubrania */
+  { id: 'u7-rojo', es: 'rojo', pl: 'czerwony', ex: 'El coche es rojo.' },
+  { id: 'u7-azul', es: 'azul', pl: 'niebieski', ex: 'El cielo es azul.' },
+  { id: 'u7-verde', es: 'verde', pl: 'zielony', ex: 'La camiseta es verde.' },
+  { id: 'u7-negro', es: 'negro', pl: 'czarny', ex: 'Tengo un bolso negro.' },
+  { id: 'u7-blanco', es: 'blanco', pl: 'biały', ex: 'Quiero una camiseta blanca.' },
+  { id: 'u7-amarillo', es: 'amarillo', pl: 'żółty', ex: 'El sol es amarillo.' },
+  { id: 'u7-camiseta', es: 'la camiseta', pl: 'koszulka', ex: 'Me gusta esta camiseta.' },
+  { id: 'u7-pantalones', es: 'los pantalones', pl: 'spodnie', ex: 'Los pantalones son negros.' },
+  { id: 'u7-vestido', es: 'el vestido', pl: 'sukienka', ex: 'El vestido es rojo.' },
+  { id: 'u7-zapatos', es: 'los zapatos', pl: 'buty', ex: 'Los zapatos son azules.' },
+  { id: 'u7-quiero-probar', es: 'quiero probar', pl: 'chcę przymierzyć', ex: 'Quiero probar esta camiseta.', chunk: true },
+  { id: 'u7-talla', es: 'la talla', pl: 'rozmiar', ex: '¿Qué talla tienes?' },
+  { id: 'u7-cuanto-cuesta', es: '¿cuánto cuesta?', pl: 'ile kosztuje?', ex: '¿Cuánto cuesta el vestido?', chunk: true },
+  { id: 'u7-me-lo-llevo', es: 'me lo llevo', pl: 'biorę to', ex: 'Me lo llevo, gracias.', chunk: true },
+
+  /* U8 — czas wolny */
+  { id: 'u8-me-gustan', es: 'me gustan', pl: 'lubię (l. mnoga)', ex: 'Me gustan los libros.', chunk: true },
+  { id: 'u8-jugar', es: 'jugar', pl: 'grać / bawić się', ex: 'Me gusta jugar al fútbol.' },
+  { id: 'u8-bailar', es: 'bailar', pl: 'tańczyć', ex: 'Me gusta bailar salsa.' },
+  { id: 'u8-cine', es: 'el cine', pl: 'kino', ex: 'Vamos al cine el sábado.' },
+  { id: 'u8-leer', es: 'leer', pl: 'czytać', ex: 'Me gusta leer novelas.' },
+  { id: 'u8-que-te-gusta', es: '¿qué te gusta?', pl: 'co lubisz?', ex: '¿Qué te gusta hacer?', chunk: true },
+  { id: 'u8-cantar', es: 'cantar', pl: 'śpiewać', ex: 'Me gusta cantar en casa.' },
+  { id: 'u8-nadar', es: 'nadar', pl: 'pływać', ex: 'Me gusta nadar en verano.' },
+  { id: 'u8-musica', es: 'la música', pl: 'muzyka', ex: 'Me gusta la música pop.' },
+  { id: 'u8-futbol', es: 'el fútbol', pl: 'piłka nożna', ex: 'Juego al fútbol los lunes.' },
+  { id: 'u8-no-me-gusta', es: 'no me gusta', pl: 'nie lubię', ex: 'No me gusta cocinar.', chunk: true },
+  { id: 'u8-tambien', es: 'también', pl: 'też / także', ex: 'A mí también me gusta.' },
+
+  /* U9 — plany i pogoda */
+  { id: 'u9-quiero', es: 'quiero', pl: 'chcę', ex: 'Quiero ir a la playa.' },
+  { id: 'u9-necesito', es: 'necesito', pl: 'potrzebuję / muszę', ex: 'Necesito un abrigo.' },
+  { id: 'u9-tengo-que', es: 'tengo que', pl: 'muszę', ex: 'Tengo que estudiar hoy.', chunk: true },
+  { id: 'u9-finde', es: 'el finde', pl: 'weekend (potocznie)', ex: '¿Qué haces el finde?' },
+  { id: 'u9-hace-sol', es: 'hace sol', pl: 'jest słonecznie', ex: 'Hoy hace sol.', chunk: true },
+  { id: 'u9-hace-frio', es: 'hace frío', pl: 'jest zimno', ex: 'En invierno hace frío.', chunk: true },
+  { id: 'u9-hace-calor', es: 'hace calor', pl: 'jest gorąco', ex: 'En agosto hace calor.', chunk: true },
+  { id: 'u9-llueve', es: 'llueve', pl: 'pada deszcz', ex: 'Hoy llueve mucho.' },
+  { id: 'u9-playa', es: 'la playa', pl: 'plaża', ex: 'Vamos a la playa el finde.' },
+  { id: 'u9-manana', es: 'mañana', pl: 'jutro', ex: 'Mañana tengo que trabajar.' },
+  { id: 'u9-descansar', es: 'descansar', pl: 'odpoczywać', ex: 'Quiero descansar el domingo.' },
+
+  /* U10 — przeszłość */
+  { id: 'u10-fui', es: 'fui', pl: 'poszedłem / byłem', ex: 'Ayer fui al cine.' },
+  { id: 'u10-comi', es: 'comí', pl: 'zjadłem', ex: 'Comí una pizza anoche.' },
+  { id: 'u10-vi', es: 'vi', pl: 'zobaczyłem / widziałem', ex: 'Vi una película muy buena.' },
+  { id: 'u10-que-hiciste', es: '¿qué hiciste?', pl: 'co robiłeś?', ex: '¿Qué hiciste el sábado?', chunk: true },
+  { id: 'u10-fin-de-semana-pasado', es: 'el fin de semana pasado', pl: 'w zeszły weekend', ex: 'El fin de semana pasado fui a Madrid.', chunk: true },
+  { id: 'u10-ayer', es: 'ayer', pl: 'wczoraj', ex: 'Ayer estudié mucho.' },
+  { id: 'u10-bebi', es: 'bebí', pl: 'wypiłem', ex: 'Bebí agua en el parque.' },
+  { id: 'u10-jugue', es: 'jugué', pl: 'grałem', ex: 'Jugué al fútbol el domingo.' },
+  { id: 'u10-estuve', es: 'estuve', pl: 'byłem (gdzieś)', ex: 'Estuve en casa todo el día.' },
+  { id: 'u10-me-gusto', es: 'me gustó', pl: 'podobało mi się', ex: 'La película me gustó mucho.', chunk: true }
+];

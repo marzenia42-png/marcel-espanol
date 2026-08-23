@@ -4,6 +4,8 @@
    Typy ćwiczeń: mc | translate | fill | build | match | speak.
    Pole `word` spina ćwiczenie ze słownikiem i systemem powtórek (SRS).        */
 
+import { EXTRA } from './lessons_extra.js';
+
 export const UNITS = [
   /* ===================== JEDNOSTKA 1: POWITANIA ===================== */
   {
@@ -372,6 +374,9 @@ export const UNITS = [
     ]
   }
 ];
+
+// doklej 2. lekcje jednostek 4–10 (fala 2)
+UNITS.forEach((u) => { if (EXTRA[u.id]) u.lessons.push(...EXTRA[u.id]); });
 
 /** Płaska, uporządkowana lista lekcji (do sekwencyjnego odblokowywania). */
 export function allLessons() {

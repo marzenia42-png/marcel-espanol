@@ -1,7 +1,7 @@
 /* Service worker — ¡Vamos!
    Strategia: precache powłoki aplikacji + cache-first z fallbackiem sieciowym.
    Wersję CACHE podbijamy przy każdym deployu, żeby wymusić odświeżenie.        */
-const CACHE = 'vamos-v1';
+const CACHE = 'vamos-v2';
 
 // Ścieżki względne — działa i na root, i pod /marcel-espanol/ na GitHub Pages.
 const ASSETS = [
@@ -19,6 +19,8 @@ const ASSETS = [
   './js/screens.js',
   './js/lesson.js',
   './data/lessons.js',
+  './data/lessons_extra.js',
+  './data/vocab_extra.js',
   './data/placement.js',
   './data/vocab.js',
   './icons/icon-192.png',

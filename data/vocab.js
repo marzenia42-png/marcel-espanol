@@ -1,6 +1,8 @@
 /* vocab.js — słownik aplikacji. `id` jest kluczem dla SRS i lekcji.
    chunk:true = gotowy zwrot do zapamiętania w całości.                         */
 
+import { EXTRA_VOCAB } from './vocab_extra.js';
+
 export const VOCAB = [
   /* --- U1: Powitania --- */
   { id: 'hola', es: 'hola', pl: 'cześć', ex: '¡Hola! ¿Qué tal?' },
@@ -126,6 +128,9 @@ export const VOCAB = [
   { id: 'me-gustaria', es: 'me gustaría', pl: 'chciałbym', ex: 'Me gustaría un café.', chunk: true },
   { id: 'acabar-de', es: 'acabar de', pl: 'właśnie coś zrobić', ex: 'Acabo de llegar.', chunk: true }
 ];
+
+// doklej słownictwo z fali 2 (jednostki 4–10)
+EXTRA_VOCAB.forEach((v) => VOCAB.push(v));
 
 /** Szybki dostęp po id. */
 export const VOCAB_BY_ID = Object.fromEntries(VOCAB.map((v) => [v.id, v]));

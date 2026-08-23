@@ -4,7 +4,8 @@
 import { el, clear, mount, toast, shuffle } from './dom.js';
 import {
   get, patchProfile, setOnboarded, gameLevel, accuracy, weakWords,
-  vocabStatus, knownCount, reset, addXp
+  vocabStatus, knownCount, reset, addXp,
+  dailyMinutes, dailyGoal, challengeAvailable, markChallenge, exportState, importState
 } from './storage.js';
 import { dueCards, boxDistribution } from './srs.js';
 import { speak, ttsSupported, asrSupported, listenOnce } from './speech.js';
@@ -187,6 +188,17 @@ export function dashboard(nav) {
     stat(String(knownCount()), 'słów', '')
   ]));
 
+  // cel dzienny
+  const dm = dailyMinutes(), dg = dailyGoal();
+  const pct = Math.min(100, Math.round((dm / dg) * 100));
+  screen.append(el('div', { class: 'card mb' }, [
+    el('div', { class: 'row' }, [
+      el('div', { style: 'flex:1' }, [el('div', { class: 'small' }, 'Cel dnia'), el('div', { style: 'font-weight:700' }, `${dm}/${dg} min`)]),
+      pct >= 100 ? el('div', { style: 'font-size:24px' }, '✅') : el('div', { class: 'small' }, `${pct}%`)
+    ]),
+    el('div', { class: 'bar', style: 'margin:8px 0 0' }, el('span', { style: `width:${pct}%` }))
+  ]));
+
   // CTA dnia
   if (nextLesson) {
     screen.append(el('div', { class: 'today', onclick: () => nav.startLesson(nextLesson) }, [
@@ -207,6 +219,14 @@ export function dashboard(nav) {
   if (due.length) {
     screen.append(el('button', { class: 'btn btn--green', type: 'button', style: 'margin-bottom:16px',
       onclick: () => startReview(nav, due) }, `🔁 Powtórka: ${due.length} ${due.length === 1 ? 'słówko' : 'słówek'}`));
+  }
+
+  // wyzwanie dnia
+  if (challengeAvailable()) {
+    screen.append(el('button', { class: 'btn btn--gold', type: 'button', style: 'margin-bottom:16px',
+      onclick: () => startChallenge(nav) }, '🏆 Wyzwanie dnia (+bonus XP)'));
+  } else {
+    screen.append(el('div', { class: 'small center', style: 'margin-bottom:16px' }, '🏆 Wyzwanie dnia zrobione — wróć jutro!'));
   }
 
   // ścieżka
@@ -264,6 +284,32 @@ function startReview(nav, dueIds) {
   });
   nav.startReview({ id: 'review', title: 'Powtórka', exercises });
 }
+
+/* wyzwanie dnia: mieszany quiz z odblokowanych lekcji */
+function startChallenge(nav) {
+  const s = get();
+  const ordered = allLessons();
+  const accessible = ordered.filter((l) => lessonUnlocked(ordered, l.id, s.progress));
+  const pool = accessible.length ? accessible : ordered.slice(0, 3);
+  const picked = shuffle(pool.flatMap((l) => l.exercises)).slice(0, 6);
+  if (!picked.length) { toast('Najpierw zrób pierwszą lekcję 🙂'); return; }
+  markChallenge();
+  nav.startLesson({ id: 'challenge', title: 'Wyzwanie dnia', exercises: picked });
+}
+
+/* sanityzacja ćwiczeń z AI (odrzuca zepsute) */
+function sanitizeAiExercises(list) {
+  const OK = ['mc', 'translate', 'fill'];
+  return (list || []).filter((e) => {
+    if (!e || !OK.includes(e.type) || !e.q) return false;
+    if (e.type === 'mc' || e.type === 'fill') return Array.isArray(e.options) && e.options.includes(e.answer);
+    if (e.type === 'translate') return Array.isArray(e.accept) && e.accept.length;
+    return false;
+  }).slice(0, 8);
+}
+
+// ustawiane przez roleplay przed wejściem na ekran rozmowy
+let roleplayOpening = null;
 
 /* =======================================================================
    SŁÓWKA
@@ -396,7 +442,31 @@ export function tutor(nav) {
   }
   screen.append(chatCard);
 
-  // 3) Ćwiczenia adaptacyjne
+  // 3) Roleplay scenariusze (AI)
+  const SCENARIOS = [
+    { t: '☕ W kawiarni', o: '¡Hola! Bienvenido a la cafetería. ¿Qué quieres tomar? (Witaj! Co podać?)' },
+    { t: '✈️ Na lotnisku', o: 'Buenos días. ¿Adónde viaja hoy? (Dzień dobry. Dokąd Pan/Pani leci?)' },
+    { t: '🛍️ W sklepie', o: '¡Hola! ¿Buscas algo en especial? (Cześć! Szukasz czegoś konkretnego?)' },
+    { t: '🤝 Poznajemy się', o: '¡Hola! Me llamo Sofía. ¿Y tú, cómo te llamas? (Cześć! Jestem Sofía. A ty?)' }
+  ];
+  const roleCard = el('div', { class: 'card mb' }, [
+    el('div', { class: 'row' }, [
+      el('div', { style: 'font-size:34px' }, '🎭'),
+      el('div', {}, [el('h3', { style: 'margin:0' }, 'Roleplay — scenki'),
+        el('div', { class: 'small' }, 'Odegraj prawdziwą sytuację po hiszpańsku (AI gra drugą osobę).')])
+    ])
+  ]);
+  if (AI.available()) {
+    const grid = el('div', { class: 'grid2', style: 'margin-top:10px' });
+    SCENARIOS.forEach((sc) => grid.appendChild(el('button', { class: 'option', style: 'justify-content:center;text-align:center;font-size:14px', type: 'button',
+      onclick: () => { roleplayOpening = sc.o; nav.go('aichat'); } }, sc.t)));
+    roleCard.appendChild(grid);
+  } else {
+    roleCard.appendChild(el('span', { class: 'tag', style: 'margin-top:10px;display:inline-block' }, '🔒 Wymaga serwera AI'));
+  }
+  screen.append(roleCard);
+
+  // 4) Ćwiczenia adaptacyjne
   const adaptCard = el('div', { class: 'card mb' }, [
     el('div', { class: 'row' }, [
       el('div', { style: 'font-size:34px' }, '🎯'),
@@ -404,7 +474,22 @@ export function tutor(nav) {
         el('div', { class: 'small' }, 'AI patrzy na Twoje błędy i generuje ćwiczenia właśnie pod nie.')])
     ])
   ]);
-  adaptCard.appendChild(el('span', { class: 'tag', style: 'margin-top:10px;display:inline-block' }, AI.available() ? '✅ Dostępne po podłączeniu' : '🔒 Wymaga serwera AI'));
+  if (AI.available()) {
+    const genBtn = el('button', { class: 'btn btn--green mt', type: 'button' }, '🎯 Generuj ćwiczenia (AI)');
+    genBtn.onclick = async () => {
+      genBtn.disabled = true; genBtn.textContent = '⏳ AI myśli…';
+      try {
+        const raw = await AI.generateExercises(weakWords(6).map((w) => w.word));
+        const ex = sanitizeAiExercises(raw);
+        if (ex.length) nav.startLesson({ id: 'ai-adapt', title: 'Ćwiczenia AI', exercises: ex });
+        else toast('AI nie zwróciło poprawnych ćwiczeń');
+      } catch (e) { toast('Błąd AI — sprawdź Ustawienia'); }
+      genBtn.disabled = false; genBtn.textContent = '🎯 Generuj ćwiczenia (AI)';
+    };
+    adaptCard.appendChild(genBtn);
+  } else {
+    adaptCard.appendChild(el('span', { class: 'tag', style: 'margin-top:10px;display:inline-block' }, '🔒 Wymaga serwera AI'));
+  }
   screen.append(adaptCard);
 
   screen.append(el('p', { class: 'small center mt' }, '🔒 Prywatność: rozmowy z AI idą przez Twój serwer, klucz API nigdy nie jest w aplikacji.'));
@@ -426,7 +511,9 @@ export function aiChat(nav) {
     return el('div', { style: `max-width:85%;margin:6px 0;padding:10px 14px;border-radius:14px;${role === 'user' ? 'align-self:flex-end;margin-left:auto;background:#23305a' : 'background:#182238'}` }, text);
   }
   log.style.display = 'flex'; log.style.flexDirection = 'column';
-  log.appendChild(bubble('assistant', '¡Hola Marcel! ¿Cómo estás hoy? (Cześć! Jak się masz?)'));
+  let sceneCtx = roleplayOpening; roleplayOpening = null;   // kontekst roleplay (jednorazowo)
+  const opening = sceneCtx || '¡Hola Marcel! ¿Cómo estás hoy? (Cześć! Jak się masz?)';
+  log.appendChild(bubble('assistant', opening));
 
   const input = el('input', { class: 'textin', type: 'text', placeholder: 'Napisz po hiszpańsku…' });
   const sendBtn = el('button', { class: 'btn btn--sm', type: 'button', style: 'width:auto' }, '➤');
@@ -438,7 +525,12 @@ export function aiChat(nav) {
     if (!txt) return;
     input.value = '';
     log.appendChild(bubble('user', txt));
-    history.push({ role: 'user', content: txt });
+    // przy roleplay dokładamy kontekst sceny do PIERWSZEJ wiadomości (niewidoczny dla Marcela)
+    const content = sceneCtx
+      ? `Odgrywamy scenkę. Rozmówca (Ty) właśnie powiedział: "${sceneCtx}". Kontynuuj w tej roli po hiszpańsku, krótko, z tłumaczeniem PL w nawiasie. Marcel odpowiada: ${txt}`
+      : txt;
+    sceneCtx = null;
+    history.push({ role: 'user', content });
     const thinking = bubble('assistant', '…');
     log.appendChild(thinking); log.scrollTop = log.scrollHeight;
     try {
@@ -553,6 +645,42 @@ export function settings(nav) {
       AI.setConfig({ endpoint: endpoint.value.trim(), model: model.value.trim(), anonKey: anonKey.value.trim() });
       toast(AI.available() ? '✅ AI włączone' : 'Zapisano (podaj poprawny URL)');
     } }, 'Zapisz konfigurację AI')
+  ]));
+
+  // kopia postępu (backup)
+  function exportBackup() {
+    const blob = new Blob([exportState()], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = el('a', { href: url, download: 'vamos-backup.json' });
+    document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    toast('Zapisano kopię 💾');
+  }
+  function importBackup(e) {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => { if (importState(String(r.result))) { toast('Wczytano ✅'); nav.go('dashboard'); } else toast('Nieprawidłowy plik'); };
+    r.readAsText(f);
+  }
+  const fileInput = el('input', { type: 'file', accept: 'application/json,.json', style: 'display:none', onchange: importBackup });
+  screen.append(el('div', { class: 'card mb' }, [
+    el('h3', {}, '💾 Kopia postępu'),
+    el('p', { class: 'small' }, 'Zapisz postęp do pliku (przyda się przy zmianie telefonu) albo wczytaj z pliku.'),
+    el('button', { class: 'btn btn--ghost', type: 'button', onclick: exportBackup }, '⬇️ Eksportuj do pliku'),
+    el('button', { class: 'btn btn--ghost mt', type: 'button', onclick: () => fileInput.click() }, '⬆️ Wczytaj z pliku'),
+    fileInput
+  ]));
+
+  // przypomnienia
+  screen.append(el('div', { class: 'card mb' }, [
+    el('h3', {}, '🔔 Przypomnienia'),
+    el('p', { class: 'small' }, 'Włącz powiadomienia, żeby nie zgubić passy. (Działa najlepiej po zainstalowaniu apki na telefonie.)'),
+    el('button', { class: 'btn btn--ghost', type: 'button', onclick: () => {
+      if (!('Notification' in window)) { toast('Telefon nie wspiera powiadomień'); return; }
+      Notification.requestPermission().then((p) => {
+        if (p === 'granted') { toast('Powiadomienia włączone 🔔'); try { new Notification('¡Vamos!', { body: '¡Hora de practicar español! 🇪🇸' }); } catch (e) {} }
+        else toast('Brak zgody na powiadomienia');
+      });
+    } }, 'Włącz powiadomienia')
   ]));
 
   // dane / reset

@@ -19,6 +19,8 @@ const DEFAULT_STATE = {
   srs: {},                               // cardId -> { box:1..5, due:'YYYY-MM-DD', seen:int, ok:int }
   vocab: {},                             // cardId -> 'new' | 'learning' | 'known'
   stats: { answers: 0, correct: 0, byType: {}, weak: {} }, // weak: word -> liczba pomyłek
+  daily: { date: null, minutes: 0 },   // postęp celu dziennego
+  lastChallenge: null,                  // data ostatniego „wyzwania dnia"
   createdAt: null
 };
 
@@ -169,6 +171,37 @@ export function vocabStatus(id) { return get().vocab[id] || 'new'; }
 export function setVocabStatus(id, status) { get().vocab[id] = status; save(); }
 export function knownCount() {
   return Object.values(get().vocab).filter((v) => v === 'known').length;
+}
+
+/* ---------- cel dzienny ---------- */
+export function logMinutes(n) {
+  const s = get();
+  const t = today();
+  if (s.daily.date !== t) s.daily = { date: t, minutes: 0 };
+  s.daily.minutes += n;
+  save();
+}
+export function dailyMinutes() {
+  const s = get();
+  return s.daily.date === today() ? s.daily.minutes : 0;
+}
+export function dailyGoal() { return get().profile.minutes || 10; }
+
+/* ---------- wyzwanie dnia ---------- */
+export function challengeAvailable() { return get().lastChallenge !== today(); }
+export function markChallenge() { get().lastChallenge = today(); save(); }
+
+/* ---------- eksport / import (backup przy zmianie telefonu) ---------- */
+export function exportState() { return JSON.stringify(get(), null, 2); }
+export function importState(str) {
+  try {
+    const obj = JSON.parse(str);
+    if (!obj || typeof obj !== 'object' || !('xp' in obj)) return false;
+    state = Object.assign(deepClone(DEFAULT_STATE), obj);
+    state.profile = Object.assign({}, DEFAULT_STATE.profile, state.profile || {});
+    save();
+    return true;
+  } catch { return false; }
 }
 
 /* ---------- reset ---------- */

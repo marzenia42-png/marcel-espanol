@@ -5,8 +5,9 @@
 import { el, clear, toast, floatXp, confetti } from './dom.js';
 import { createExercise } from './exercises.js';
 import { review } from './srs.js';
+import * as AI from './ai.js';
 import {
-  recordAnswer, completeLesson, addXp, touchStreak, setVocabStatus, vocabStatus
+  recordAnswer, completeLesson, addXp, touchStreak, logMinutes
 } from './storage.js';
 
 const PRAISE = ['¡Correcto!', '¡Muy bien!', '¡Genial!', '¡Perfecto!', '¡Excelente!'];
@@ -93,6 +94,20 @@ export function runLesson(host, lesson, { onDone, onExit }) {
         el('div', { class: 'ttl' }, '✗ Prawie!'),
         el('div', { class: 'corr' }, ['Poprawnie: ', el('b', { class: 'es' }, String(r.expected))])
       ]));
+      // „Wyjaśnij (AI)" — tylko gdy tutor podłączony
+      if (AI.available()) {
+        const exBtn = el('button', { class: 'btn btn--ghost', type: 'button', style: 'margin-bottom:8px' }, '❓ Wyjaśnij (AI)');
+        exBtn.onclick = async () => {
+          exBtn.disabled = true; exBtn.textContent = '⏳ AI myśli…';
+          try {
+            const reply = await AI.chat([{ role: 'user', content:
+              `Uczę się hiszpańskiego (poziom A1). Poprawna odpowiedź to "${r.expected}", a ja napisałem "${r.given}". Wyjaśnij KRÓTKO po polsku (1–2 zdania), prosto, dlaczego.` }]);
+            fbSlot.insertBefore(el('div', { class: 'feedback', style: 'background:#182238' }, [el('div', { class: 'corr' }, reply)]), exBtn);
+          } catch (e) { toast('Błąd AI — sprawdź Ustawienia'); }
+          exBtn.remove();
+        };
+        fbSlot.appendChild(exBtn);
+      }
       actionBtn.className = 'btn';
       // odśwież serduszka w topbarze
       const hr = screen.querySelector('.hearts');
@@ -106,6 +121,7 @@ export function runLesson(host, lesson, { onDone, onExit }) {
   function finish() {
     const accuracy = total ? Math.round((correctCount / total) * 100) : 0;
     completeLesson(lesson.id, accuracy);
+    logMinutes(4);                       // wkład w cel dzienny (~4 min/lekcję)
     const streak = touchStreak();
     // bonusy
     let bonus = 15;
