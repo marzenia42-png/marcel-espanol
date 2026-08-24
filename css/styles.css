@@ -216,14 +216,14 @@ p  { margin: 0 0 .8em; color: var(--txt-dim); line-height: 1.5; }
 .build-answer { min-height: 60px; border-bottom: 2px dashed var(--line); display:flex; flex-wrap:wrap; gap:8px; align-content:flex-start; padding: 8px 0; margin-bottom: 14px; }
 .build-bank { display:flex; flex-wrap:wrap; gap:8px; }
 .token { padding: 10px 14px; border-radius: 12px; background: var(--card-2); border:1px solid var(--line);
-  font-size: 16px; font-weight:600; cursor:pointer; user-select:none; transition: transform .06s, opacity .15s; }
+  color: var(--txt); font-size: 16px; font-weight:600; cursor:pointer; user-select:none; transition: transform .06s, opacity .15s; }
 .token:active { transform: scale(.94); }
 .token.used { opacity: .25; pointer-events: none; }
 .token.placed { background: rgba(245,179,1,.12); border-color: var(--oro); }
 
 /* dopasowanie par */
 .match-cols { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.match-item { padding: 12px; border-radius: 12px; background: var(--card); border:2px solid var(--line); text-align:center; font-weight:600; cursor:pointer; min-height:52px; display:grid; place-content:center; }
+.match-item { padding: 12px; border-radius: 12px; background: var(--card); color: var(--txt); border:2px solid var(--line); text-align:center; font-weight:600; cursor:pointer; min-height:52px; display:grid; place-content:center; }
 .match-item.sel { border-color: var(--oro); background: rgba(245,179,1,.1); }
 .match-item.ok  { border-color: var(--verde); background: var(--ok-bg); opacity:.65; pointer-events:none; }
 .match-item.err { border-color: var(--rojo); animation: shake .3s; }
@@ -315,6 +315,11 @@ p  { margin: 0 0 .8em; color: var(--txt-dim); line-height: 1.5; }
 
 /* Pola formularzy dziedziczą krój po aplikacji (nie natywny systemowy). */
 input, textarea, select, button { font-family: inherit; }
+
+/* ZAPORA: przycisk bez własnej klasy koloru bierze kolor tekstu z motywu,
+   nigdy natywny czarny UA. Kafle .token/.match-item były czarne na ciemnym.
+   Klasy z własnym color (.btn, .option, .pill, .speak, .tab…) wygrywają specyfiką. */
+button { color: var(--txt); }
 
 /* ---------- MOTYW JASNY ---------- */
 :root[data-theme="light"] {

@@ -1,7 +1,7 @@
 /* Service worker — ¡Vamos!
    Strategia: precache powłoki aplikacji + cache-first z fallbackiem sieciowym.
    Wersję CACHE podbijamy przy każdym deployu, żeby wymusić odświeżenie.        */
-const CACHE = 'vamos-v3';
+const CACHE = 'vamos-v4';
 
 // Ścieżki względne — działa i na root, i pod /marcel-espanol/ na GitHub Pages.
 const ASSETS = [
