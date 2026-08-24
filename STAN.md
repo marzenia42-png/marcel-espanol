@@ -10,6 +10,9 @@ _Ostatnia sesja: 2026-08-24. PWA do nauki hiszpańskiego dla Marcela (18 lat, po
 - **Cel dzienny**, **Wyzwanie dnia**, panel postępów, eksport/import backupu, przypomnienia.
 - **Innowacja AI:** trener wymowy (rozpoznawanie mowy on-device, za darmo) + lektor TTS + tutor LLM (roleplay, adaptacyjne ćwiczenia, „Wyjaśnij") przez proxy Supabase.
 - **Wygląd (24.08, fala 3):** motyw jasny/ciemny/**auto** + rozmiar tekstu (Normalny/Duży/Największy) w Ustawieniach → sekcja „🎨 Wygląd"; naprawiony bug „czarna czcionka na czarnym tle" (`color-scheme` + jawny kolor placeholdera + 2 zaszyte ciemne tła na zmienne); cache sw podbity `vamos-v2→v3`. Zweryfikowane na renderze (oba motywy + duża czcionka). **Uwaga: zmiany lokalne — do wyświetlenia u Marcela trzeba commit+push (Pages auto-deploy).**
+- **Fix kontrastu (24.08, commit `22dcde9`):** co — kafle par „Połącz pary" (`.match-item`) i klocki układania zdań (`.token`) miały czarny tekst na ciemnym tle (były `<button>` bez `color` → dziedziczyły czarny UA).
+  gdzie — `css/styles.css`: `color: var(--txt)` na obu klasach + bazowa zapora `button{color:var(--txt)}`; cache SW `v3→v4`.
+  weryfikacja — render obu motywów (pary + klocki), tekst czytelny (WCAG AA).
 - Repo **publiczne** `marzenia42-png/marcel-espanol` **od 24.08.2026** — 0 sekretów w historii (skan całej historii commitów przed publikacją; klucz AI tylko w ENV/sekretach Supabase).
 - **LIVE dla Marcela:** `https://marzenia42-png.github.io/marcel-espanol/` (GitHub Pages przez workflow Actions, HTTPS wymuszony, ścieżki względne → PWA offline działa pod podkatalogiem).
 - Backup na Drive: `claudia:BACKUP/marcel-espanol/`.
