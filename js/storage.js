@@ -21,6 +21,7 @@ const DEFAULT_STATE = {
   stats: { answers: 0, correct: 0, byType: {}, weak: {} }, // weak: word -> liczba pomyłek
   daily: { date: null, minutes: 0 },   // postęp celu dziennego
   lastChallenge: null,                  // data ostatniego „wyzwania dnia"
+  ui: { theme: 'dark', font: 'm' },    // wygląd: theme=light|dark|auto, font=m|l|xl
   createdAt: null
 };
 
@@ -58,6 +59,7 @@ export function load() {
       // dołóż brakujące gałęzie po ewentualnej aktualizacji schematu
       state.profile = Object.assign({}, DEFAULT_STATE.profile, state.profile);
       state.stats   = Object.assign({}, DEFAULT_STATE.stats, state.stats);
+      state.ui      = Object.assign({}, DEFAULT_STATE.ui, state.ui);
       return state;
     }
   } catch (e) { console.warn('Uszkodzony stan, resetuję.', e); }
@@ -203,6 +205,14 @@ export function importState(str) {
     return true;
   } catch { return false; }
 }
+
+/* ---------- wygląd (motyw + rozmiar tekstu) ---------- */
+export function getUi() {
+  const s = get();
+  if (!s.ui) s.ui = { theme: 'dark', font: 'm' };
+  return s.ui;
+}
+export function patchUi(patch) { Object.assign(getUi(), patch); save(); }
 
 /* ---------- reset ---------- */
 export function reset() {

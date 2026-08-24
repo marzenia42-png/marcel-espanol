@@ -5,10 +5,12 @@ import { el, clear, mount, toast, shuffle } from './dom.js';
 import {
   get, patchProfile, setOnboarded, gameLevel, accuracy, weakWords,
   vocabStatus, knownCount, reset, addXp,
-  dailyMinutes, dailyGoal, challengeAvailable, markChallenge, exportState, importState
+  dailyMinutes, dailyGoal, challengeAvailable, markChallenge, exportState, importState,
+  getUi, patchUi
 } from './storage.js';
 import { dueCards, boxDistribution } from './srs.js';
 import { speak, ttsSupported, asrSupported, listenOnce } from './speech.js';
+import { applyAppearance } from './theme.js';
 import * as AI from './ai.js';
 import { UNITS, allLessons } from '../data/lessons.js';
 import { VOCAB } from '../data/vocab.js';
@@ -508,7 +510,7 @@ export function aiChat(nav) {
   screen.append(log);
 
   function bubble(role, text) {
-    return el('div', { style: `max-width:85%;margin:6px 0;padding:10px 14px;border-radius:14px;${role === 'user' ? 'align-self:flex-end;margin-left:auto;background:#23305a' : 'background:#182238'}` }, text);
+    return el('div', { style: `max-width:85%;margin:6px 0;padding:10px 14px;border-radius:14px;${role === 'user' ? 'align-self:flex-end;margin-left:auto;background:var(--card-2)' : 'background:var(--card)'}` }, text);
   }
   log.style.display = 'flex'; log.style.flexDirection = 'column';
   let sceneCtx = roleplayOpening; roleplayOpening = null;   // kontekst roleplay (jednorazowo)
@@ -621,6 +623,40 @@ export function settings(nav) {
   screen.append(el('div', { class: 'topbar' }, [
     el('button', { class: 'iconbtn', type: 'button', onclick: () => nav.go('dashboard') }, '‹'),
     el('h2', { style: 'margin:0' }, '⚙️ Ustawienia')
+  ]));
+
+  // wygląd: motyw + rozmiar tekstu
+  const ui = getUi();
+  const pickRow = (items, current, onPick) => {
+    const wrap = el('div', { style: 'display:grid;grid-template-columns:repeat(3,1fr);gap:10px' });
+    items.forEach((it) => {
+      const b = el('button', {
+        class: 'option' + (current === it.v ? ' sel' : ''), type: 'button',
+        style: 'justify-content:center;text-align:center;padding:12px 6px',
+        onclick: (e) => {
+          wrap.querySelectorAll('.option').forEach((x) => x.classList.remove('sel'));
+          e.currentTarget.classList.add('sel');
+          onPick(it.v);
+        }
+      }, it.label);
+      wrap.append(b);
+    });
+    return wrap;
+  };
+  screen.append(el('div', { class: 'card mb' }, [
+    el('h3', {}, '🎨 Wygląd'),
+    el('div', { class: 'small', style: 'margin-bottom:6px' }, 'Motyw'),
+    pickRow(
+      [{ v: 'light', label: '☀️ Jasny' }, { v: 'dark', label: '🌙 Ciemny' }, { v: 'auto', label: '🖥️ Auto' }],
+      ui.theme || 'dark',
+      (v) => { patchUi({ theme: v }); applyAppearance(); toast('Motyw zmieniony'); }
+    ),
+    el('div', { class: 'small', style: 'margin:12px 0 6px' }, 'Rozmiar tekstu'),
+    pickRow(
+      [{ v: 'm', label: 'A · Normalny' }, { v: 'l', label: 'A · Duży' }, { v: 'xl', label: 'A · Największy' }],
+      ui.font || 'm',
+      (v) => { patchUi({ font: v }); applyAppearance(); toast('Rozmiar zmieniony'); }
+    )
   ]));
 
   // wariant

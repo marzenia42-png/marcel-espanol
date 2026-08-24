@@ -299,3 +299,57 @@ p  { margin: 0 0 .8em; color: var(--txt-dim); line-height: 1.5; }
 .mt { margin-top: 14px; } .mb { margin-bottom: 14px; }
 .hidden { display:none !important; }
 .confetti { position: fixed; inset:0; pointer-events:none; z-index: 80; }
+
+/* =========================================================================
+   MOTYW JASNY / CIEMNY + ROZMIAR TEKSTU   (dodane 24.08.2026 — dla Marcela)
+   Ciemny = domyślny (zmienne w :root na górze). Jasny = nadpisania poniżej.
+=========================================================================== */
+
+/* Natywne kontrolki (pola, scrollbar, autofill) dopasowane do motywu.
+   To eliminuje „czarną czcionkę na czarnym tle" w polach formularzy. */
+:root, :root[data-theme="dark"] { color-scheme: dark; }
+:root[data-theme="light"]      { color-scheme: light; }
+
+/* Placeholder zawsze czytelny (był bug: domyślny szary ≈ czarny na ciemnym polu). */
+.textin::placeholder, input::placeholder, textarea::placeholder { color: var(--muted); opacity: 1; }
+
+/* Pola formularzy dziedziczą krój po aplikacji (nie natywny systemowy). */
+input, textarea, select, button { font-family: inherit; }
+
+/* ---------- MOTYW JASNY ---------- */
+:root[data-theme="light"] {
+  --bg:        #f4f6fc;
+  --bg-2:      #e8edf7;
+  --card:      #ffffff;
+  --card-2:    #f2f5fd;
+  --line:      #d3dbec;
+  --txt:       #16203a;
+  --txt-dim:   #43537a;
+  --muted:     #6b7a9c;
+
+  --oro:       #b7860b;   /* złoto ściemnione — czytelne jako tekst na bieli */
+  --oro-2:     #986f00;
+
+  --ok-bg:     rgba(34,197,94,.16);
+  --err-bg:    rgba(239,68,68,.12);
+  --shadow:    0 10px 26px rgba(23,32,58,.12);
+}
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(1100px 500px at 50% -10%, #ffffff 0%, transparent 60%),
+    radial-gradient(700px 400px at 100% 0%, rgba(239,68,68,.06) 0%, transparent 55%),
+    var(--bg);
+}
+:root[data-theme="light"] .boot__spin { border-color: rgba(0,0,0,.12); border-top-color: var(--oro); }
+:root[data-theme="light"] .today       { background: linear-gradient(135deg,#fff6e3,#fdeceb); }
+:root[data-theme="light"] .today::after { color: rgba(0,0,0,.045); }
+:root[data-theme="light"] .tabbar      { background: rgba(255,255,255,.92); }
+:root[data-theme="light"] .toast       { background: #ffffff; color: var(--txt); }
+:root[data-theme="light"] .vcard .chunk    { background: rgba(139,92,246,.14); color:#6d28d9; }
+:root[data-theme="light"] .badge.learning  { background: rgba(59,130,246,.15); color:#1d4ed8; }
+:root[data-theme="light"] .badge.new       { background: rgba(107,123,158,.18); color: var(--txt-dim); }
+
+/* ---------- ROZMIAR TEKSTU (skalowanie proporcjonalne całej apki) ---------- */
+:root[data-font="m"]  .app { zoom: 1;    }
+:root[data-font="l"]  .app { zoom: 1.12; }
+:root[data-font="xl"] .app { zoom: 1.25; }

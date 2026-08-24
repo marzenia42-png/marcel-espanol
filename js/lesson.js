@@ -102,7 +102,7 @@ export function runLesson(host, lesson, { onDone, onExit }) {
           try {
             const reply = await AI.chat([{ role: 'user', content:
               `Uczę się hiszpańskiego (poziom A1). Poprawna odpowiedź to "${r.expected}", a ja napisałem "${r.given}". Wyjaśnij KRÓTKO po polsku (1–2 zdania), prosto, dlaczego.` }]);
-            fbSlot.insertBefore(el('div', { class: 'feedback', style: 'background:#182238' }, [el('div', { class: 'corr' }, reply)]), exBtn);
+            fbSlot.insertBefore(el('div', { class: 'feedback', style: 'background:var(--card-2)' }, [el('div', { class: 'corr' }, reply)]), exBtn);
           } catch (e) { toast('Błąd AI — sprawdź Ustawienia'); }
           exBtn.remove();
         };

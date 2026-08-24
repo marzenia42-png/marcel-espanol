@@ -15,6 +15,18 @@
   <meta name="apple-mobile-web-app-title" content="¡Vamos!" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+  <!-- motyw ustawiony PRZED CSS, żeby nie było migotania przy jasnym trybie -->
+  <script>
+    try {
+      var u = (JSON.parse(localStorage.getItem('vamos_state_v1')) || {}).ui || {};
+      var t = u.theme || 'dark';
+      if (t === 'auto') t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      document.documentElement.setAttribute('data-font', u.font || 'm');
+    } catch (e) {}
+  </script>
+
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>

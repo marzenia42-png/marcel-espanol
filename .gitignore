@@ -8,3 +8,6 @@ desktop.ini
 
 # nic z node — projekt jest czysto statyczny (vanilla JS)
 node_modules/
+
+# artefakty CLI Supabase (lokalne, nie do repo)
+supabase/.temp/

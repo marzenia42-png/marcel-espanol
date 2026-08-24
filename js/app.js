@@ -2,6 +2,7 @@
 
 import { el, clear } from './dom.js';
 import { load, get } from './storage.js';
+import { applyAppearance, watchSystemTheme } from './theme.js';
 import { runLesson } from './lesson.js';
 import * as Screens from './screens.js';
 
@@ -71,6 +72,8 @@ function startOnboarding() {
 /* ---------------- boot ---------------- */
 function boot() {
   load();
+  applyAppearance();       // motyw + rozmiar tekstu z zapisanych ustawień
+  watchSystemTheme();      // reaguj na zmianę trybu systemowego gdy motyw = auto
   if (!get().onboarded) startOnboarding();
   else renderMain('dashboard');
 }
